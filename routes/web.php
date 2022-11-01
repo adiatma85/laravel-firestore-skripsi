@@ -26,5 +26,5 @@ Route::get('/', function () {
 Route::get('users', [UserController::class, 'index'])->name('user.index');
 
 // Route::resource('categories', CategoriesController::class);
-Route::get('categories', [CategoriesController::class, 'index'])->name('category.index');
-Route::get('categories/store', [CategoriesController::class, 'store'])->name('category.index');
+// Route::get('categories', [CategoriesController::class, 'index'])->name('category.index');
+// Route::get('categories/store', [CategoriesController::class, 'store'])->name('category.index');
