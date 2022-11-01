@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Traits\ResponseTrait;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Traits\ResponseTrait;
 
-class CategoriesController extends Controller
+class BeritaController extends Controller
 {
-
     use ResponseTrait;
-    public const DOCUMENT = "categories";
+    public const DOCUMENT = "news";
 
     public function index(){
         $data = app('firebase.firestore')
@@ -17,16 +17,17 @@ class CategoriesController extends Controller
             ->collection(static::DOCUMENT)
             ->documents();
             
-        $categories = [];
-        $categoriesRow = collect($data->rows());
-        foreach ($categoriesRow as $row) {
-            $category = [
+        $news = [];
+        $newsRow = collect($data->rows());
+        foreach ($newsRow as $row) {
+            $item = [
                 'id' => $row->id(),
-                'name' => $row->data()['name'],
+                'title' => $row->data()['title'],
+                'content' => $row->data()['content'],
             ];
-            array_push($categories, $category);
+            array_push($news, $item);
         }
-        return $this->successResponse("success fetching resources", $categories);
+        return $this->successResponse("success fetching resources", $news);
     }
 
     public function show($id){
@@ -34,14 +35,15 @@ class CategoriesController extends Controller
             ->database()
             ->collection(static::DOCUMENT)
             ->document($id);
-        $row = $firestore->snapshot();
 
-        $category = [
+        $row = $firestore->snapshot();
+        $news = [
             'id' => $row->id(),
-            'name' => $row->data()['name'],
+            'title' => $row->data()['title'],
+            'content' => $row->data()['content'],
         ];
 
-        return $this->successResponse("success fetching resources", $category);
+        return $this->successResponse("success fetching resources", $news);
     }
 
     public function store(Request $request)
@@ -52,7 +54,8 @@ class CategoriesController extends Controller
             ->newDocument();
 
         $data = [
-            'name' => $request->post('name'),
+            'title' => $request->post('title'),
+            'content' => $request->post('content'),
         ];
         $firestore->set($data);
 
@@ -66,9 +69,9 @@ class CategoriesController extends Controller
             ->document($id);
         
         $data = [
-            'name' => $request->post('name'),
+            'title' => $request->post('title'),
+            'content' => $request->post('content'),
         ];
-
         $firestore->set($data);
 
         return $this->successResponse("success update resuource", null);

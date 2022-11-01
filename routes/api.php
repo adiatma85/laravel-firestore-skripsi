@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\Api\BeritaController;
+use App\Http\Controllers\Api\PengumumanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Categories
 Route::apiResource('categories', CategoriesController::class);
+
+// Beritas
+Route::apiResource('news', BeritaController::class);
+
+// Pengumumans
+Route::apiResource('announcements', PengumumanController::class);
