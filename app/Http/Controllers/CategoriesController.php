@@ -15,6 +15,7 @@ class CategoriesController extends Controller
     public const DOCUMENT = "categories";
     public const STORAGE = "categories/";
 
+
     public function index(){
         $data = app('firebase.firestore')
             ->database()
