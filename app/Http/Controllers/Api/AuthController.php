@@ -7,12 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Service\RoleService;
 use Symfony\Component\HttpFoundation\Response;
 
 // Contracts
 use App\Http\Controllers\Contracts\TokenInterface;
-use UserInterface;
+use App\Http\Controllers\Contracts\UserInterface;
 
 
 // Services
@@ -44,25 +43,7 @@ class AuthController extends Controller{
                 return $this->badRequestFailResponse($validateUser);
             }
 
-            $query = app('firebase.firestore')
-                ->database()
-                ->collection('users')
-                ->where('email', '=', $request->email)
-                ;
-            $documents = $query->documents();
-            $user = null;
-
-            foreach ($documents as $row) {
-                $email = $row->data()['email'];
-                if ($request->post('email') == $email) {
-                    $user = [
-                        "id" => $row->id(),
-                        "email" => $row->data()['email'] ?? "",
-                        "password" => $row->data()["password"] ?? "",
-                    ];
-                }
-            }
-
+            $user = $this->userService->getByEmail($request->input('email'));
             if (!$user) {
                 return $this->response(false, 401, "invalid credential", null);
             }
@@ -85,7 +66,6 @@ class AuthController extends Controller{
 
 
     public function register(Request $request){
-
         $validateUser = Validator::make($request->all(), 
             [
                 'email' => 'required|email',
@@ -96,26 +76,24 @@ class AuthController extends Controller{
             return $this->badRequestFailResponse($validateUser);
         }
 
+        // Make sure that email is not duplicated
         $isEmailExist = $this->userService->isEmailExist($request->input('email'));
         if ($isEmailExist) {
             return $this->response(false, Response::HTTP_BAD_REQUEST, "email is already exist", null);
         }
 
+        // If there are not duplicated email, then hash the password
         $hashedPassword = Hash::make($request->input('password'));
         $userData = [
             "email" => $request->input('email'),
             "password" => $hashedPassword
         ];
 
+        // Store the user data
         $this->userService->store($userData);
 
-        // Create the token
+        // If finish, create new token
         $token = $this->tokenService->generateToken($userData);
-
-        return $this->response(false, Response::HTTP_OK, "register success", $token);
-
-        // Pastikan tidak ada email yang terduplikasi
-        // Jika tidak ada yang terduplikasi, maka hash password, dan masukkan data yang dimaksud
-        // Jika sudah selesai semua, buat token
+        return $this->response(false, Response::HTTP_OK, "register success", compact('token'));
     }
 }
