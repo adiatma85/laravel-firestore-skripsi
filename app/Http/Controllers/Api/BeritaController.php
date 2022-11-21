@@ -7,58 +7,39 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ResponseTrait;
 use App\Http\Controllers\Traits\CommonTrait;
 
+// Contracts
+use App\Http\Controllers\Contracts\BeritaInterface;
+
+// Service
+use App\Http\Controllers\Service\BeritaService;
+
 class BeritaController extends Controller
 {
     use ResponseTrait;
     use CommonTrait;
 
+    protected BeritaInterface $beritaService;
+
     public const DOCUMENT = "news";
     public const STORAGE = "news/";
 
+    public function __construct(){
+        $this->beritaService = new BeritaService();
+    }
+
     public function index(){
-        $data = app('firebase.firestore')
-            ->database()
-            ->collection(static::DOCUMENT)
-            ->documents();
-            
-        $news = [];
-        $newsRow = collect($data->rows());
-        foreach ($newsRow as $row) {
-            $item = [
-                'id' => $row->id(),
-                'title' => $row->data()['title'] ?? "",
-                'content' => $row->data()['content'] ?? "",
-                'image_url' => $row->data()['image_url'] ?? "",
-            ];
-            array_push($news, $item);
-        }
+        $news = $this->beritaService->index();
         return $this->successResponse("success fetching resources", $news);
     }
 
+    // Take note untuk response seperti not found
     public function show($id){
-        $firestore = app('firebase.firestore')
-            ->database()
-            ->collection(static::DOCUMENT)
-            ->document($id);
-
-        $row = $firestore->snapshot();
-        $news = [
-            'id' => $row->id(),
-            'title' => $row->data()['title'] ?? "",
-            'content' => $row->data()['content'] ?? "",
-            'image_url' => $row->data()['image_url'] ?? "",
-        ];
-
+        $news = $this->beritaService->getById($id);
         return $this->successResponse("success fetching resources", $news);
     }
 
     public function store(Request $request)
     {
-        $firestore = app('firebase.firestore')
-            ->database()
-            ->collection(static::DOCUMENT)
-            ->newDocument();
-
         if ($request->file('image')) {
             $urlPath = $this->storeImage($request->file('image'), static::STORAGE);
         }
@@ -68,22 +49,20 @@ class BeritaController extends Controller
             'content' => $request->post('content'),
             'image_url' => $urlPath ?? "",
         ];
-        $firestore->set($data);
+        $this->beritaService->store($data);
 
         return $this->successResponse("success created resources", null);
     }
 
     public function update(Request $request, $id){
-        $firestore = app('firebase.firestore')
-            ->database()
-            ->collection(static::DOCUMENT)
-            ->document($id);
-        $row = $firestore->snapshot();
+        $row = $this->beritaService->getById($id);
         
         $data = [
             'title' => $request->post('title') ? $request->post('title') : $row->data()['title'] ?? "",
             'content' => $request->post('content') ? $request->post('content') : $row->data()['content'] ?? "",
         ];
+
+        $this->beritaService->update($id, $data);
 
         // If the user uploading an image
         // This is bug
@@ -93,17 +72,11 @@ class BeritaController extends Controller
         //     $data['image_url'] = $row->data()['image_url'] ?? "";
         // }
 
-        $firestore->set($data);
-
         return $this->successResponse("success update resuource", null);
     }
 
     public function destroy($id){
-        $firestore = app('firebase.firestore')
-            ->database()
-            ->collection(static::DOCUMENT)
-            ->document($id)
-            ->delete();
+        $this->beritaService->delete($id);
         
         return $this->successResponse("success delete resuource", null);
     }
