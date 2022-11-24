@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ResponseTrait;
 use App\Http\Controllers\Traits\CommonTrait;
 
-// Contracts
-use App\Http\Controllers\Contracts\PengumumanInterface;
 
 // Service
 use App\Http\Controllers\Service\PengumumanService;

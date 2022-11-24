@@ -1,11 +1,11 @@
 <?php
 
-// Finalize "register" function
 
 namespace App\Http\Controllers\Service;
 
 // Interface
 use App\Http\Controllers\Contracts\UserInterface;
+use Illuminate\Support\Carbon;
 
 // Reference for firestore https://googleapis.github.io/google-cloud-php/#/docs/cloud-firestore/v1.26.0/firestore/firestoreclient
     // https://firebase.google.com/docs/firestore/query-data/queries
@@ -37,8 +37,9 @@ class UserService implements UserInterface {
 
     // Store the user
     public function store($data){
-        $newDocument = $this->firestore->newDocument();
-        $newDocument->set($data);
+        $data['created_at'] = Carbon::now()->toTimeString();
+        $data['updated_at'] = Carbon::now()->toTimeString();
+        $query = $this->firestore->newDocument()->set($data);
     }
 
     // Function to get particular user with email

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Service;
 
-use App\Http\Controllers\Contracts\PengumumanInterface;
-use Illuminate\Support\Carbon;
+use App\Http\Controllers\Contracts\EntryMailInterface;
 
-class PengumumanService implements PengumumanInterface {
+class EntryMailService implements EntryMailInterface {
 
-    public const DOCUMENT = "announcements";
+    public const DOCUMENT = "entry_mails";
     protected $firestore;
 
     public function __construct(){
@@ -18,56 +17,63 @@ class PengumumanService implements PengumumanInterface {
 
     public function index(): mixed{
         $query = $this->firestore->documents();
-        $announcements = [];
-        $rows = collect($query->rows());
+        $entryMails = [];
+        $rows = collect($query->rows());   
 
         foreach ($rows as $row) {
             $item = [
                 'id' => $row->id(),
+                // Foreign keys
+                'user_id' => $row->data()['user_id'] ?? "",
                 // Core Data
                 'title' => $row->data()['title'] ?? "",
-                'content' => $row->data()['content'] ?? "",
-                'image_url' => $row->data()['image_url'] ?? "",
+                'type' => $row->data()['type'] ?? "",
+                'status' => $row->data()['status'] ?? "",
+                'file_url' => $row->data()['file_url'] ?? "",
+                'reject_reason' => $row->data()['reject_reason'] ?? "",
                 // General
                 'created_at' => $row->data()['created_at'] ?? "",
                 'updated_at' => $row->data()['updated_at'] ?? "",
                 'deleted_at' => $row->data()['deleted_at'] ?? "-",
             ];
-            array_push($announcements, $item);
+            array_push($entryMails, $item);
         }
-        return $announcements;
+        return $entryMails;
     }
 
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $news = [
+        $entryMail = [
             'id' => $row->id(),
+                // Foreign keys
+            'user_id' => $row->data()['user_id'] ?? "",
             // Core Data
             'title' => $row->data()['title'] ?? "",
-            'content' => $row->data()['content'] ?? "",
-            'image_url' => $row->data()['image_url'] ?? "",
+            'type' => $row->data()['type'] ?? "",
+            'status' => $row->data()['status'] ?? "",
+            'file_url' => $row->data()['file_url'] ?? "",
+            'reject_reason' => $row->data()['reject_reason'] ?? "",
             // General
             'created_at' => $row->data()['created_at'] ?? "",
             'updated_at' => $row->data()['updated_at'] ?? "",
             'deleted_at' => $row->data()['deleted_at'] ?? "-",
         ];
 
-        return $news;
+        return $entryMail;
     }
 
-    public function store($data) {
-        $data['created_at'] = Carbon::now()->toTimeString();
-        $data['updated_at'] = Carbon::now()->toTimeString();
+    // Will be experimenting on old service rahter than new
+    public function store($data){
         $query = $this->firestore->newDocument()->set($data);        
     }
 
-    public function update(string $id, $data) {
-        $data['updated_at'] = Carbon::now()->toTimeString();
-        $query = $this->firestore->document($id)->set($data);
+    // Will be experimenting on old service rahter than new
+    public function update(string $id, $data){
+        $query = $this->firestore->document($id)->set($data);        
     }
 
-    // For delete, wait after testing two function above
+    // Will be experimenting on old service rahter than new
     public function delete(string $id){
         $query = $this->firestore->document($id)->delete();
     }

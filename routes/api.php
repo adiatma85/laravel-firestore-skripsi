@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\PengumumanController;
+use App\Http\Controllers\Api\KependudukanController;
+use App\Http\Controllers\Api\PeraturanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +37,15 @@ Route::apiResource('news', BeritaController::class);
 
 // Pengumumans
 Route::apiResource('announcements', PengumumanController::class);
+
+// Kependudukan
+Route::apiResource('kependudukans', KependudukanController::class);
+
+// Rules
+Route::apiResource('rules', PeraturanController::class);
+
+// Request PDF
+
+// Untuk saat ini kita selesaikain skeleton terlebih dahulu
+
+
