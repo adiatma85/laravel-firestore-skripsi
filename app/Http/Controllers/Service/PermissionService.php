@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\Service;
 
-use App\Http\Controllers\Contracts\RoleInterface;
+use App\Http\Controllers\Contracts\PermissionInterface;
 use Illuminate\Support\Carbon;
 
-class RoleService implements RoleInterface {
+class PermissionService implements PermissionInterface{
 
-    public const DOCUMENT = "roles";
+    public const DOCUMENT = "permissions";
     protected $firestore;
 
     public function __construct(){
         $this->firestore = app('firebase.firestore')
         ->database()
-        ->collection(static::DOCUMENT);
+        ->collection(static::DOCUMENT);   
     }
 
-    public function index(): mixed
-    {
+    public function index(): mixed{
         $query = $this->firestore->documents();
-        $roles = [];
+        $permissions = [];
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
@@ -32,17 +31,16 @@ class RoleService implements RoleInterface {
                 'updated_at' => $row->data()['updated_at'] ?? "",
                 'deleted_at' => $row->data()['deleted_at'] ?? "-",
             ];
-            array_push($roles, $item);
+            array_push($permissions, $item);
         }
 
-        return $roles;
+        return $permissions;
     }
 
-    public function getById(string $id): mixed
-    {
+    public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $role = [
+        $permission = [
             'id' => $row->id(),  
             // Core Data
             'title' => $row->data()['title'] ?? "",
@@ -52,24 +50,21 @@ class RoleService implements RoleInterface {
             'deleted_at' => $row->data()['deleted_at'] ?? "-",
         ];
 
-        return $role;
+        return $permission;
     }
 
-    public function store($data)
-    {
+    public function store($data){
         $data['created_at'] = Carbon::now()->toTimeString();
         $data['updated_at'] = Carbon::now()->toTimeString();
-        $query = $this->firestore->newDocument()->set($data);   
+        $query = $this->firestore->newDocument()->set($data);        
     }
 
-    public function update(string $id, $data)
-    {
+    public function update(string $id, $data){
         $data['updated_at'] = Carbon::now()->toTimeString();
         $query = $this->firestore->document($id)->set($data);
     }
 
-    public function delete(string $id)
-    {
+    public function delete(string $id){
         $query = $this->firestore->document($id)->delete();
     }
 }

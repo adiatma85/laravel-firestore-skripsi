@@ -4,11 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CategoriesController;
+
+// Api Controllers
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\KependudukanController;
 use App\Http\Controllers\Api\PeraturanController;
+use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\EntryMailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +34,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);;
 Route::post('register', [AuthController::class, 'register']);
 
-// Categories
-Route::apiResource('categories', CategoriesController::class);
+// Permissions
+Route::apiResource('permissions', PermissionController::class);
+
+// Roles
+Route::apiResource('roles', RoleController::class);
+
+// Users
+// Awaiting after Jmeter is success in both repository
+
+// Kependudukan
+Route::apiResource('kependudukans', KependudukanController::class);
+
+// Entry Mail
+Route::apiResource('entry_mails', EntryMailController::class);
 
 // Beritas
 Route::apiResource('news', BeritaController::class);
@@ -38,14 +55,39 @@ Route::apiResource('news', BeritaController::class);
 // Pengumumans
 Route::apiResource('announcements', PengumumanController::class);
 
-// Kependudukan
-Route::apiResource('kependudukans', KependudukanController::class);
-
 // Rules
 Route::apiResource('rules', PeraturanController::class);
 
-// Request PDF
+// Add ons
+// Categories
+Route::apiResource('categories', CategoriesController::class);
 
-// Untuk saat ini kita selesaikain skeleton terlebih dahulu
+// // Removed 'auth.sanctum' for testing the performance testing
+// Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => []], function () {
+//     // Permissions
+//     Route::apiResource('permissions', 'PermissionsApiController');
 
+//     // Roles
+//     Route::apiResource('roles', 'RolesApiController');
 
+//     // Users
+//     Route::apiResource('users', 'UsersApiController');
+
+//     // Kependudukan
+//     Route::apiResource('kependudukans', 'KependudukanApiController');
+
+//     // Entry Mail
+//     Route::post('entry-mails/media', 'EntryMailApiController@storeMedia')->name('entry-mails.storeMedia');
+//     Route::apiResource('entry-mails', 'EntryMailApiController');
+
+//     // Berita
+//     Route::post('berita/media', 'BeritaApiController@storeMedia')->name('berita.storeMedia');
+//     Route::apiResource('berita', 'BeritaApiController');
+
+//     // Pengumuman
+//     Route::post('pengumumen/media', 'PengumumanApiController@storeMedia')->name('pengumumen.storeMedia');
+//     Route::apiResource('pengumumen', 'PengumumanApiController');
+
+//     // Rule
+//     Route::apiResource('rules', 'RuleApiController');
+// });

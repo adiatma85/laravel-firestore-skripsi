@@ -9,6 +9,12 @@ class PeraturanService implements PeraturanInterface{
 
     public const DOCUMENT = "rules";
     protected $firestore;
+
+    public function __construct(){
+        $this->firestore = app('firebase.firestore')
+        ->database()
+        ->collection(static::DOCUMENT);
+    }
     
     public function index(): mixed{
         $query = $this->firestore->documents();
@@ -43,6 +49,8 @@ class PeraturanService implements PeraturanInterface{
             'updated_at' => $row->data()['updated_at'] ?? "",
             'deleted_at' => $row->data()['deleted_at'] ?? "-",
         ];
+
+        return $rule;
     }
 
     public function store($data){
