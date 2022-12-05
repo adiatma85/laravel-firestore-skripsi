@@ -76,6 +76,7 @@ class BeritaController extends Controller
     }
 
     public function destroy($id){
+        $id = $this->beritaService->index()[0]['id'];
         $this->beritaService->delete($id);
         
         return $this->successResponse("success delete resuource", null);

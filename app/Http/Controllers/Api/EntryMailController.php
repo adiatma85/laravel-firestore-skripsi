@@ -64,6 +64,7 @@ class EntryMailController extends Controller {
     }
 
     public function destroy(String $id){
+        $id = $this->beritaService->index()[0]['id'];
         $this->entryMailService->delete($id);
 
         return $this->successResponse("success delete resuource", null);
