@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\RoleInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\RoleDocument;
 
 class RoleService implements RoleInterface {
 
@@ -23,15 +24,7 @@ class RoleService implements RoleInterface {
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
-            $item = [
-                'id' => $row->id(),  
-                // Core Data
-                'title' => $row->data()['title'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new RoleDocument($row);
             array_push($roles, $item);
         }
 
@@ -42,15 +35,7 @@ class RoleService implements RoleInterface {
     {
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $role = [
-            'id' => $row->id(),  
-            // Core Data
-            'title' => $row->data()['title'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $role = new RoleDocument($row);
 
         return $role;
     }

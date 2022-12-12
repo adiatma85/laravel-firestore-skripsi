@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\BeritaInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\BeritaDocument;
 
 class BeritaService implements BeritaInterface {
 
@@ -22,17 +23,7 @@ class BeritaService implements BeritaInterface {
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
-            $item = [
-                'id' => $row->id(),
-                // Core Data
-                'title' => $row->data()['title'] ?? "",
-                'content' => $row->data()['content'] ?? "",
-                'image_url' => $row->data()['image_url'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new BeritaDocument($row);
             array_push($news, $item);
         }
         return $news;
@@ -41,16 +32,7 @@ class BeritaService implements BeritaInterface {
     public function getById(string $id): mixed {
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $news = [
-            'id' => $row->id(),
-            'title' => $row->data()['title'] ?? "",
-            'content' => $row->data()['content'] ?? "",
-            'image_url' => $row->data()['image_url'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $news = new BeritaDocument($row);
 
         return $news;
     }
