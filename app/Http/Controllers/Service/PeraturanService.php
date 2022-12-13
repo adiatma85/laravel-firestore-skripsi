@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\PeraturanInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\PeraturanDocument;
 
 class PeraturanService implements PeraturanInterface{
 
@@ -22,15 +23,7 @@ class PeraturanService implements PeraturanInterface{
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
-            $item = [
-                'id' => $row->id(),
-                // Core Data
-                'content' => $row->data()['content'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new PeraturanDocument($row);
             array_push($rules, $item);
         }
 
@@ -40,15 +33,7 @@ class PeraturanService implements PeraturanInterface{
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $rule = [
-            'id' => $row->id(),
-            // Core Data
-            'content' => $row->data()['content'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $rule = new PeraturanDocument($row);
 
         return $rule;
     }

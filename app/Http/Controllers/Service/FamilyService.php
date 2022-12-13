@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Service;
 
+use App\Documents\FamilyDocument;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Contracts\FamilyInterface;
 
 class FamilyService implements FamilyInterface{
@@ -22,23 +24,7 @@ class FamilyService implements FamilyInterface{
 
         foreach ($rows as $row) {
             // If using soft delete, then we have if to check condition
-            $item = [
-                'id' => $row->id(),
-                // Core Data
-                'no_kk' => $row->data()['no_kk'] ?? "",
-                'status_kependudukan' => $row->data()['status_kependudukan'] ?? "",
-                'address' => $row->data()['address'] ?? "",
-                'rt_rw' => $row->data()['rt_rw'] ?? "",
-                'postal_code' => $row->data()['postal_code'] ?? "",
-                'kelurahan' => $row->data()['kelurahan'] ?? "",
-                'kecamatan' => $row->data()['kecamatan'] ?? "",
-                'city' => $row->data()['city'] ?? "",
-                'province' => $row->data()['province'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new FamilyDocument($row);
             array_push($families, $item);
         }
 
@@ -48,34 +34,21 @@ class FamilyService implements FamilyInterface{
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $family = [
-            'id' => $row->id(),
-                // Core Data
-            'no_kk' => $row->data()['no_kk'] ?? "",
-            'status_kependudukan' => $row->data()['status_kependudukan'] ?? "",
-            'address' => $row->data()['address'] ?? "",
-            'rt_rw' => $row->data()['rt_rw'] ?? "",
-            'postal_code' => $row->data()['postal_code'] ?? "",
-            'kelurahan' => $row->data()['kelurahan'] ?? "",
-            'kecamatan' => $row->data()['kecamatan'] ?? "",
-            'city' => $row->data()['city'] ?? "",
-            'province' => $row->data()['province'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $family = new FamilyDocument($row);
 
         return $family;
     }
 
     // Will be experimenting on old service rahter than new
     public function store($data){
+        $data['created_at'] = Carbon::now()->toTimeString();
+        $data['updated_at'] = Carbon::now()->toTimeString();
         $query = $this->firestore->newDocument()->set($data);        
     }
 
     // Will be experimenting on old service rahter than new
     public function update(string $id, $data){
+        $data['updated_at'] = Carbon::now()->toTimeString();
         $query = $this->firestore->document($id)->set($data);        
     }
 

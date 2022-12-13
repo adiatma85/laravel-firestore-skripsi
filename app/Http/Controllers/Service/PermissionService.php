@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\PermissionInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\PermissionDocument;
 
 class PermissionService implements PermissionInterface{
 
@@ -22,15 +23,7 @@ class PermissionService implements PermissionInterface{
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
-            $item = [
-                'id' => $row->id(),  
-                // Core Data
-                'title' => $row->data()['title'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new PermissionDocument($row);
             array_push($permissions, $item);
         }
 
@@ -40,15 +33,7 @@ class PermissionService implements PermissionInterface{
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $permission = [
-            'id' => $row->id(),  
-            // Core Data
-            'title' => $row->data()['title'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $permission = new PermissionDocument($row);
 
         return $permission;
     }

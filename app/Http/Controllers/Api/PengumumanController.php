@@ -72,7 +72,7 @@ class PengumumanController extends Controller
     }
 
     public function destroy(String $id){
-        $id = $this->beritaService->index()[0]['id'];
+        $id = $this->pengumumanService->index()[0]->id;
         $this->pengumumanService->delete($id);
         
         return $this->successResponse("success delete resuource", null);

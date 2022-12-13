@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\PengumumanInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\PengumumanDocument;
 
 class PengumumanService implements PengumumanInterface {
 
@@ -22,17 +23,7 @@ class PengumumanService implements PengumumanInterface {
         $rows = collect($query->rows());
 
         foreach ($rows as $row) {
-            $item = [
-                'id' => $row->id(),
-                // Core Data
-                'title' => $row->data()['title'] ?? "",
-                'content' => $row->data()['content'] ?? "",
-                'image_url' => $row->data()['image_url'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new PengumumanDocument($row);
             array_push($announcements, $item);
         }
         return $announcements;
@@ -41,17 +32,7 @@ class PengumumanService implements PengumumanInterface {
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $news = [
-            'id' => $row->id(),
-            // Core Data
-            'title' => $row->data()['title'] ?? "",
-            'content' => $row->data()['content'] ?? "",
-            'image_url' => $row->data()['image_url'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $news = new PengumumanDocument($row);
 
         return $news;
     }

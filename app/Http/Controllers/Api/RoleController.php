@@ -54,7 +54,7 @@ class RoleController extends Controller{
     }
 
     public function destroy(String $id){
-        $id = $this->beritaService->index()[0]['id'];
+        $id = $this->roleService->index()[0]->id;
         $this->roleService->delete($id);
 
         return $this->successResponse("success delete resuource", null);

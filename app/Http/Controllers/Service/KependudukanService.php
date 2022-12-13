@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Contracts\KependudukanInterface;
+use Illuminate\Support\Carbon;
+use App\Documents\KependudukanDocument;
 
 class KependudukanService implements KependudukanInterface {
 
@@ -22,43 +24,7 @@ class KependudukanService implements KependudukanInterface {
 
         foreach ($rows as $row) {
             // If using soft delete, then we have if to check condition
-            $item = [
-                'id' => $row->id(),
-                // Foreign keys
-                'user_id' => $row->data()['user_id'] ?? "",
-                'family_id' => $row->data()['family_id'] ?? "",
-                // Core Data
-                'fullname' => $row->data()['fullname'] ?? "",
-                'nik' => $row->data()['nik'] ?? "",
-                'birthdate' => $row->data()['birthdate'] ?? "",
-                'birthplace' => $row->data()['birthplace'] ?? "",
-                'address' => $row->data()['address'] ?? "",
-                'gender' => $row->data()['gender'] ?? "",
-                'religion' => $row->data()['religion'] ?? "",
-                'marital_status' => $row->data()['marital_status'] ?? "",
-                'latest_education' => $row->data()['latest_education'] ?? "",
-                'occupation' => $row->data()['occupation'] ?? "",
-                'phone_number' => $row->data()['phone_number'] ?? "",
-                'disease' => $row->data()['disease'] ?? "",
-                'rt_rw' => $row->data()['rt_rw'] ?? "",
-                'postal_code' => $row->data()['postal_code'] ?? "",
-                'kelurahan' => $row->data()['kelurahan'] ?? "",
-                'kecamatan' => $row->data()['kecamatan'] ?? "",
-                'city' => $row->data()['city'] ?? "",
-                'province' => $row->data()['province'] ?? "",
-                // Father section
-                'father_name' => $row->data()['father_name'] ?? "",
-                'father_religion' => $row->data()['father_religion'] ?? "",
-                'father_occupation' => $row->data()['father_occupation'] ?? "",
-                // Mother section
-                'mother_name' => $row->data()['mother_name'] ?? "",
-                'mother_religion' => $row->data()['mother_religion'] ?? "",
-                'mother_occupation' => $row->data()['mother_occupation'] ?? "",
-                // General
-                'created_at' => $row->data()['created_at'] ?? "",
-                'updated_at' => $row->data()['updated_at'] ?? "",
-                'deleted_at' => $row->data()['deleted_at'] ?? "-",
-            ];
+            $item = new KependudukanDocument($row);
             array_push($kependudukans, $item);
         }
 
@@ -68,54 +34,21 @@ class KependudukanService implements KependudukanInterface {
     public function getById(string $id): mixed{
         $query = $this->firestore->document($id);
         $row = $query->snapshot();
-        $kependudukan = [
-            'id' => $row->id(),
-            // Foreign Keys
-            'user_id' => $row->data()['user_id'] ?? "",
-            'family_id' => $row->data()['family_id'] ?? "",
-            // Core Data
-            'fullname' => $row->data()['fullname'] ?? "",
-            'nik' => $row->data()['nik'] ?? "",
-            'birthdate' => $row->data()['birthdate'] ?? "",
-            'birthplace' => $row->data()['birthplace'] ?? "",
-            'address' => $row->data()['address'] ?? "",
-            'gender' => $row->data()['gender'] ?? "",
-            'religion' => $row->data()['religion'] ?? "",
-            'marital_status' => $row->data()['marital_status'] ?? "",
-            'latest_education' => $row->data()['latest_education'] ?? "",
-            'occupation' => $row->data()['occupation'] ?? "",
-            'phone_number' => $row->data()['phone_number'] ?? "",
-            'disease' => $row->data()['disease'] ?? "",
-            'rt_rw' => $row->data()['rt_rw'] ?? "",
-            'postal_code' => $row->data()['postal_code'] ?? "",
-            'kelurahan' => $row->data()['kelurahan'] ?? "",
-            'kecamatan' => $row->data()['kecamatan'] ?? "",
-            'city' => $row->data()['city'] ?? "",
-            'province' => $row->data()['province'] ?? "",
-            // Father section
-            'father_name' => $row->data()['father_name'] ?? "",
-            'father_religion' => $row->data()['father_religion'] ?? "",
-            'father_occupation' => $row->data()['father_occupation'] ?? "",
-            // Mother section
-            'mother_name' => $row->data()['mother_name'] ?? "",
-            'mother_religion' => $row->data()['mother_religion'] ?? "",
-            'mother_occupation' => $row->data()['mother_occupation'] ?? "",
-            // General
-            'created_at' => $row->data()['created_at'] ?? "",
-            'updated_at' => $row->data()['updated_at'] ?? "",
-            'deleted_at' => $row->data()['deleted_at'] ?? "-",
-        ];
+        $kependudukan = new KependudukanDocument($row);
 
         return $kependudukan;
     }
 
     // Will be experimenting on old service rahter than new
     public function store($data){
+        $data['created_at'] = Carbon::now()->toTimeString();
+        $data['updated_at'] = Carbon::now()->toTimeString();
         $query = $this->firestore->newDocument()->set($data);        
     }
 
     // Will be experimenting on old service rahter than new
     public function update(string $id, $data){
+        $data['updated_at'] = Carbon::now()->toTimeString();
         $query = $this->firestore->document($id)->set($data);        
     }
 
