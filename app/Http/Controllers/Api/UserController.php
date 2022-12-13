@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\ResponseTrait;
 use App\Http\Controllers\Traits\CommonTrait;
@@ -68,8 +70,8 @@ class UserController extends Controller
     }
 
     // Random delete
-    public function delete($id){
-        $id = $this->userService->index()[0]['id'];
+    public function destroy($id){
+        $id = $this->userService->index()[0]->id;
         $this->userService->delete($id);
 
         return $this->successResponse("success delete resuource", null);

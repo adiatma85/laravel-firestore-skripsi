@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Service;
 // Interface
 use App\Http\Controllers\Contracts\UserInterface;
 use Illuminate\Support\Carbon;
+use App\Documents\UserDocument;
 
 // Reference for firestore https://googleapis.github.io/google-cloud-php/#/docs/cloud-firestore/v1.26.0/firestore/firestoreclient
     // https://firebase.google.com/docs/firestore/query-data/queries
@@ -18,6 +19,27 @@ class UserService implements UserInterface {
         $this->firestore = app('firebase.firestore')
         ->database()
         ->collection(static::DOCUMENT);
+    }
+
+    public function index(): mixed{
+        $query = $this->firestore->documents();
+        $users = [];
+        $rows = collect($query->rows());
+
+        foreach ($rows as $row) {
+            $item = new UserDocument($row);
+            array_push($users, $item);
+        }
+
+        return $users;
+    }
+
+    public function getById(string $id): mixed{
+        $query = $this->firestore->document($id);
+        $row = $query->snapshot();
+        $user = new UserDocument($row);
+
+        return $user;
     }
 
 
@@ -56,5 +78,14 @@ class UserService implements UserInterface {
         }
 
         return $user;
+    }
+
+    public function update(string $id, $data){
+        $data['updated_at'] = Carbon::now()->toTimeString();
+        $query = $this->firestore->document($id)->set($data);
+    }
+
+    public function delete(string $id){
+        $query = $this->firestore->document($id)->delete();
     }
 }

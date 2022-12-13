@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PeraturanController;
 use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\EntryMailController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,60 +35,35 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);;
 Route::post('register', [AuthController::class, 'register']);
 
-// Permissions
-Route::apiResource('permissions', PermissionController::class);
 
-// Roles
-Route::apiResource('roles', RoleController::class);
+// Route to testing in skripsi
+Route::prefix('v1')->group(function(){
+    // Permissions
+    Route::apiResource('permissions', PermissionController::class);
 
-// Users
-// Awaiting after Jmeter is success in both repository
+    // Roles
+    Route::apiResource('roles', RoleController::class);
 
-// Kependudukan
-Route::apiResource('kependudukans', KependudukanController::class);
+    // Users
+    Route::apiResource('users', UserController::class);
 
-// Entry Mail
-Route::apiResource('entry_mails', EntryMailController::class);
+    // Kependudukan
+    Route::apiResource('kependudukans', KependudukanController::class);
 
-// Beritas
-Route::apiResource('news', BeritaController::class);
+    // Entry Mail
+    Route::apiResource('entry_mails', EntryMailController::class);
 
-// Pengumumans
-Route::apiResource('announcements', PengumumanController::class);
+    // Beritas
+    Route::apiResource('news', BeritaController::class);
 
-// Rules
-Route::apiResource('rules', PeraturanController::class);
+    // Pengumumans
+    Route::apiResource('announcements', PengumumanController::class);
+
+    // Rules
+    Route::apiResource('rules', PeraturanController::class);
+});
+
 
 // Add ons
 // Categories
 Route::apiResource('categories', CategoriesController::class);
-
-// // Removed 'auth.sanctum' for testing the performance testing
-// Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => []], function () {
-//     // Permissions
-//     Route::apiResource('permissions', 'PermissionsApiController');
-
-//     // Roles
-//     Route::apiResource('roles', 'RolesApiController');
-
-//     // Users
-//     Route::apiResource('users', 'UsersApiController');
-
-//     // Kependudukan
-//     Route::apiResource('kependudukans', 'KependudukanApiController');
-
-//     // Entry Mail
-//     Route::post('entry-mails/media', 'EntryMailApiController@storeMedia')->name('entry-mails.storeMedia');
-//     Route::apiResource('entry-mails', 'EntryMailApiController');
-
-//     // Berita
-//     Route::post('berita/media', 'BeritaApiController@storeMedia')->name('berita.storeMedia');
-//     Route::apiResource('berita', 'BeritaApiController');
-
-//     // Pengumuman
-//     Route::post('pengumumen/media', 'PengumumanApiController@storeMedia')->name('pengumumen.storeMedia');
-//     Route::apiResource('pengumumen', 'PengumumanApiController');
-
-//     // Rule
-//     Route::apiResource('rules', 'RuleApiController');
-// });
