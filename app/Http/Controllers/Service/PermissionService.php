@@ -38,6 +38,17 @@ class PermissionService implements PermissionInterface{
         return $permission;
     }
 
+    public function getByArrayString($array): mixed{
+        $items = [];
+
+        foreach ($array as $key) {
+            $item = $this->getById($key);
+            array_push($items, $item);
+        }
+
+        return $items;
+    }
+
     public function store($data){
         $data['created_at'] = Carbon::now()->toTimeString();
         $data['updated_at'] = Carbon::now()->toTimeString();
