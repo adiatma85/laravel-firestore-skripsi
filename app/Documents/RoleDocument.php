@@ -8,10 +8,16 @@ class RoleDocument {
         $this->id = $row->id();
         // Core Data
         $this->title = $row->data()['title'] ?? "";
+        $this->permissions = $row->data()['permissions'] ?? array();
         // general Data
         $this->created_at = $row->data()['created_at'] ?? "";
         $this->updated_at = $row->data()['updated_at'] ?? "";
         $this->deleted_at = $row->data()['deleted_at'] ?? "";
+    }
+
+    // Function to initiate each permission
+    public function getPermission($data){
+        return new PermissionDocument($data);
     }
 
     //Id
@@ -19,6 +25,12 @@ class RoleDocument {
 
     // title
     public String $title;
+
+    // Permission relation
+    public $permissions;
+
+    // Vermissions
+    public $vermissions;
 
     // Created At
     public String $created_at;

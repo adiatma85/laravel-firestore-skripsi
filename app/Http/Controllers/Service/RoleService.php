@@ -10,11 +10,15 @@ class RoleService implements RoleInterface {
 
     public const DOCUMENT = "roles";
     protected $firestore;
+    protected PermissionService $permissionService;
 
     public function __construct(){
         $this->firestore = app('firebase.firestore')
         ->database()
         ->collection(static::DOCUMENT);
+
+        // PermissionService
+        $this->permissionService = new PermissionService();
     }
 
     public function index(): mixed
@@ -25,6 +29,7 @@ class RoleService implements RoleInterface {
 
         foreach ($rows as $row) {
             $item = new RoleDocument($row);
+            $item->permissions = $this->permissionService->getByArrayString($item->permissions);
             array_push($roles, $item);
         }
 
