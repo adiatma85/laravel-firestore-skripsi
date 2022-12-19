@@ -29,9 +29,6 @@ class RoleDocument {
     // Permission relation
     public $permissions;
 
-    // Vermissions
-    public $vermissions;
-
     // Created At
     public String $created_at;
 
