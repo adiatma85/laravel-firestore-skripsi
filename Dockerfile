@@ -14,29 +14,10 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Enable Sodium
 RUN docker-php-ext-install sodium
 
-# # #
-# Install build dependencies
-# # #
-ENV build_deps \
-    autoconf \
-    zlib-dev
-
-RUN apk upgrade --update-cache --available && apk update && \
-    apk add --virtual .build-dependencies $build_deps &&  apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
-
-# # #
-# Install persistent dependencies
-# # #
-ENV persistent_deps \
-    g++ \
-    gcc \
-    linux-headers \
-    make \
-    zlib
-
 # Enable GRPC
-# RUN pecl install grpc
-RUN docker-php-ext-install grpc
+RUN apk --no-cache add $PHPIZE_DEPS zip unzip git zlib-dev
+RUN pecl install grpc
+RUN docker-php-ext-enable grpc
 
 # # #
 # remove build deps
