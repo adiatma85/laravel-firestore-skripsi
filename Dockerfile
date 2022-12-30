@@ -12,7 +12,8 @@ RUN docker-php-ext-install exif
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Enable Sodium
-RUN docker-php-ext-install sodium
+RUN apk add --no-cache libsodium \
+ && docker-php-ext-install sodium
 
 # Enable GRPC
 RUN docker-php-ext-install ext-grpc
