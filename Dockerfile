@@ -22,7 +22,7 @@ ENV build_deps \
     zlib-dev
 
 RUN apk upgrade --update-cache --available && apk update && \
-    apk add --virtual .build-dependencies $build_deps
+    apk add --virtual .build-dependencies $build_deps &&  apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 # # #
 # Install persistent dependencies
