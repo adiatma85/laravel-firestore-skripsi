@@ -1,7 +1,7 @@
 FROM php:8.1.11-fpm-alpine
 
 # Enable zip
-RUN apk add --no-cache zip libzip-dev libsodium \
+RUN apk add --no-cache zip libzip-dev libsodium-dev \
   && docker-php-ext-configure zip \
   && docker-php-ext-install zip
 
