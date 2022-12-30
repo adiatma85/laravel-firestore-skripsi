@@ -35,8 +35,8 @@ ENV persistent_deps \
     zlib
 
 # Enable GRPC
-RUN pecl install grpc
-RUN docker-php-ext-enable grpc
+# RUN pecl install grpc
+RUN docker-php-ext-install grpc
 
 # # #
 # remove build deps
