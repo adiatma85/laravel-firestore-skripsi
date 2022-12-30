@@ -14,9 +14,34 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Enable Sodium
 RUN docker-php-ext-install sodium
 
+# # #
+# Install build dependencies
+# # #
+ENV build_deps \
+    autoconf \
+    zlib-dev
+
+RUN apk upgrade --update-cache --available && apk update && \
+    apk add --virtual .build-dependencies $build_deps
+
+# # #
+# Install persistent dependencies
+# # #
+ENV persistent_deps \
+    g++ \
+    gcc \
+    linux-headers \
+    make \
+    zlib
+
 # Enable GRPC
 RUN pecl install grpc
 RUN docker-php-ext-enable grpc
+
+# # #
+# remove build deps
+# # #
+RUN apk del -f .build-dependencies
 
 RUN apk add --no-cache nginx wget
 
