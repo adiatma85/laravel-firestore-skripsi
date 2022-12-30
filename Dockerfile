@@ -11,6 +11,12 @@ RUN docker-php-ext-install exif
 # Enable PDO and PDO MYSQL
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Enable Sodium
+RUN docker-php-ext-install sodium
+
+# Enable GRPC
+RUN docker-php-ext-install ext-grpc
+
 RUN apk add --no-cache nginx wget
 
 RUN mkdir -p /run/nginx
