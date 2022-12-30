@@ -15,7 +15,8 @@ RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-install sodium
 
 # Enable GRPC
-RUN docker-php-ext-install grpc
+RUN pecl install grpc
+RUN docker-php-ext-enable grpc
 
 RUN apk add --no-cache nginx wget
 
