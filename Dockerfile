@@ -15,7 +15,7 @@ RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-install sodium
 
 # Enable GRPC
-RUN apk --no-cache add $PHPIZE_DEPS zip unzip git zlib-dev
+RUN apk --no-cache add $PHPIZE_DEPS zip unzip git zlib-dev linux-headers
 RUN pecl install grpc
 RUN docker-php-ext-enable grpc
 
