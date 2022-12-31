@@ -1,7 +1,7 @@
 FROM php:8.1.11-fpm-alpine
 
 # Enable zip
-RUN apk add --no-cache zip libzip-dev libsodium-dev \
+RUN apk add --no-cache zip libzip-dev libsodium-dev zip unzip git zlib-dev linux-headers \
   && docker-php-ext-configure zip \
   && docker-php-ext-install zip
 
@@ -15,7 +15,7 @@ RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-install sodium
 
 # Enable GRPC
-RUN apk --no-cache add $PHPIZE_DEPS zip unzip git zlib-dev linux-headers
+# RUN apk --no-cache add $PHPIZE_DEPS zip unzip git zlib-dev linux-headers
 RUN pecl install grpc
 RUN docker-php-ext-enable grpc
 
