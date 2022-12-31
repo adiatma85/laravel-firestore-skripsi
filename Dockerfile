@@ -13,7 +13,7 @@ RUN docker-php-source extract \
         # linux-headers \
         nginx \
         wget \
-        libsodium \
+        libsodium-dev \
         libpq-dev
 
 # Install zip
