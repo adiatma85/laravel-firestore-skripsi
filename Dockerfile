@@ -9,8 +9,8 @@ RUN docker-php-source extract \
         zip \ 
         unzip \
         git \
-        zlib-dev \
-        linux-headers \
+        # zlib-dev \
+        # linux-headers \
         nginx \
         wget \
         libpq-dev
